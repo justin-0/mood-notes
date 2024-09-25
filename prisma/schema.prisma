@@ -30,6 +30,21 @@ model Entry {
 
   content String @db.Text
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId   String
+  user     User      @relation(fields: [userId], references: [id])
+  analysis Analysis?
+}
+
+model Analysis {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entryId String @unique
+  entry   Entry  @relation(fields: [entryId], references: [id])
+
+  mood     String
+  summary  String  @db.Text
+  colour   String
+  negative Boolean
 }
