@@ -1,3 +1,4 @@
+import getCurrentUser from "@/lib/current-user";
 import prisma from "@/lib/db";
 
 export default async function getEntries(userId: string | null) {
@@ -6,12 +7,7 @@ export default async function getEntries(userId: string | null) {
   }
 
   try {
-    const user = await prisma.user.findUniqueOrThrow({
-      where: {
-        clerkUserId: userId,
-      },
-    });
-
+    const user = await getCurrentUser();
     const entries = await prisma.entry.findMany({
       where: {
         userId: user?.id,
