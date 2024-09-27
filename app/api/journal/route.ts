@@ -1,5 +1,6 @@
 import getCurrentUser from "@/lib/current-user";
 import prisma from "@/lib/db";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST() {
@@ -12,6 +13,8 @@ export async function POST() {
       content: "Write about your day",
     },
   });
+
+  revalidatePath("/journal", "page");
 
   return NextResponse.json({ data: entry });
 }
