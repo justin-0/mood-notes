@@ -14,5 +14,6 @@ export const createNewEntry = async () => {
   }
 
   const data: { data: Entry } = await res.json();
+  console.log("DATA NEW ENTRY", data);
   return data.data;
 };
