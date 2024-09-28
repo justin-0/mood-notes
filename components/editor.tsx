@@ -17,7 +17,7 @@ export default function Editor({ data }: EditorProps) {
     <div className="w-full h-[calc(100vh-64px)] p-10">
       <div>
         <textarea
-          className="p-10 w-full h-[calc(100vh-120px)] outline outline-black/5 text-xl"
+          className="p-10 w-full h-[calc(100vh-120px)] text-xl outline-none"
           value={content}
           onChange={handleChange}
         />
