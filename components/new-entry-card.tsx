@@ -8,7 +8,6 @@ export default function NewEntryCard() {
   const handleClick = async () => {
     const data = await createNewEntry();
     router.push(`/journal/${data.id}`);
-    // router.refresh();
   };
   return (
     <div className="border rounded-lg border-black/10 w-1/4 hover:bg-slate-200/10 transiton h-12 flex items-center justify-center">
