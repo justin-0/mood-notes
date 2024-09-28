@@ -16,3 +16,17 @@ export const createNewEntry = async () => {
   const data: { data: Entry } = await res.json();
   return data.data;
 };
+
+export const updateEntry = async (id: string, content: string) => {
+  const res = await fetch(new Request(url(`/api/journal/${id}`)), {
+    method: "PATCH",
+    body: JSON.stringify({ content }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Journal entry not updated");
+  }
+
+  const data: { data: Entry } = await res.json();
+  return data.data;
+};
