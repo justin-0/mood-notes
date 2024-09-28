@@ -1,5 +1,5 @@
 import Editor from "@/components/editor";
-import getEntry from "@/data-access-layer/entry";
+import getEntry from "@/data-access-layer/get-entry";
 import { redirect } from "next/navigation";
 
 type EntryPageProps = {
@@ -12,5 +12,6 @@ export default async function EntryPage({ params }: EntryPageProps) {
   const id = params.entryID;
   const entry = await getEntry(id);
   if (!entry) return redirect("/journal");
-  return <Editor data={entry?.data} />;
+
+  return <Editor data={entry.data} />;
 }
