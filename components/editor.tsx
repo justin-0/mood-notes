@@ -26,11 +26,11 @@ export default function Editor({ data }: EditorProps) {
   });
 
   return (
-    <div className="w-full h-[calc(100vh-64px)] p-10">
+    <div className="w-full h-full">
       {isLoading ? <span>Saving..</span> : null}
       <div>
         <textarea
-          className="p-10 w-full h-[calc(100vh-120px)] text-xl outline-none"
+          className="p-10 w-full h-[calc(100vh-120px)] text-xl outline-none resize-none"
           value={content}
           onChange={handleChange}
         />
