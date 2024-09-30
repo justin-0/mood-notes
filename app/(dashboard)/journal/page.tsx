@@ -9,9 +9,7 @@ export default async function JournalPage() {
   const { userId } = auth();
 
   const entries = await getEntries(userId);
-  await analyse(
-    "today i took the dog for a walk who was well behaved, we found a dog and she played well with it"
-  );
+
   return (
     <div className="grid grid-cols-3 gap-4 p-10">
       <NewEntryCard />
