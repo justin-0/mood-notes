@@ -7,7 +7,11 @@ import { PromptTemplate } from "@langchain/core/prompts";
 // Output for AI reply
 const parser = StructuredOutputParser.fromZodSchema(
   z.object({
-    subject: z.string().describe("Overall subject of the journal entry, ."),
+    subject: z
+      .string()
+      .describe(
+        "Overall subject of the journal entry, keep it short, no longer than 4 words."
+      ),
     summary: z.string().describe("Quick summary of the entire journal entry."),
     mood: z
       .string()

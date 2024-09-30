@@ -1,18 +1,16 @@
 import getCurrentUser from "@/lib/current-user";
 import prisma from "@/lib/db";
 
-export default async function getEntries() {
+export default async function getAnalysis(id: string) {
   try {
     const user = await getCurrentUser();
-    const entries = await prisma.entry.findMany({
+    if (!user) return;
+    const analysis = await prisma.analysis.findUnique({
       where: {
-        userId: user?.id,
-      },
-      orderBy: {
-        createdAt: "desc",
+        entryId: id,
       },
     });
-    return entries;
+    return analysis;
   } catch (e) {
     if (e instanceof Error) {
       console.log("Get_Entries", e.message);
