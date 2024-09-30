@@ -4,12 +4,14 @@ import React from "react";
 import { Entry } from "@prisma/client";
 import { useAutosave } from "react-autosave";
 import { updateEntry } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 type EditorProps = {
   data: Entry;
 };
 
 export default function Editor({ data }: EditorProps) {
+  const router = useRouter();
   const [content, setContent] = React.useState(data.content);
   const [isLoading, setIsLoading] = React.useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -22,6 +24,7 @@ export default function Editor({ data }: EditorProps) {
       setIsLoading(true);
       const updated = await updateEntry(data.id, value);
       setIsLoading(false);
+      router.refresh();
     },
   });
 
