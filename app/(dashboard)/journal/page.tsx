@@ -1,7 +1,6 @@
 import EntryCard from "@/components/entry-card";
 import NewEntryCard from "@/components/new-entry-card";
 import getEntries from "@/data-access-layer/all-entries";
-import { analyse } from "@/lib/ai";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 

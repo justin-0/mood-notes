@@ -43,6 +43,7 @@ model Analysis {
   entryId String @unique
   entry   Entry  @relation(fields: [entryId], references: [id])
 
+  subject  String
   mood     String
   summary  String  @db.Text
   colour   String

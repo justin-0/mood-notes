@@ -29,7 +29,7 @@ export const analyse = async (prompt: string) => {
   const chain = RunnableSequence.from([
     // Tells AI the format to output in its reply from journal entry
     PromptTemplate.fromTemplate(
-      "Answer the users question as best as possible.\n{format_instructions}\n{question}"
+      "Analyse the journal entry. Your reply must always match the output schema, do not divert from this!\n{format_instructions}\n{question}"
     ),
     new OpenAI({ temperature: 0, apiKey: process.env.OPENAI_API_KEY }),
     parser,
@@ -38,5 +38,5 @@ export const analyse = async (prompt: string) => {
     question: prompt,
     format_instructions: parser.getFormatInstructions(),
   });
-  console.log(response);
+  return response;
 };

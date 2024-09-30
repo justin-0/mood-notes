@@ -1,4 +1,5 @@
 import { Entry } from "@prisma/client";
+import { analyse } from "./ai";
 
 // Created so wherever it is hosted the url will always be correct
 const url = (path: string) => window.location.origin + path;

@@ -1,3 +1,4 @@
+import { analyse } from "@/lib/ai";
 import getCurrentUser from "@/lib/current-user";
 import prisma from "@/lib/db";
 import { NextResponse } from "next/server";
@@ -23,5 +24,15 @@ export async function PATCH(
     },
   });
 
-  return NextResponse.json({ data: updatedEntry });
+  const analysis = await analyse(content);
+  const updatedAnalysis = await prisma.analysis.update({
+    where: {
+      entryId: id,
+    },
+    data: {
+      ...analysis,
+    },
+  });
+
+  return NextResponse.json({ data: updatedEntry, analysis: updatedAnalysis });
 }
