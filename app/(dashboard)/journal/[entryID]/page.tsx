@@ -21,7 +21,10 @@ export default async function EntryPage({ params }: EntryPageProps) {
         <Editor data={entry.data} />
       </div>
       <div className="border-l border-black/10">
-        <div className={`p-4 text-3xl bg-[${analysis?.colour}]`}>
+        <div
+          className="p-4 text-3xl"
+          style={{ backgroundColor: analysis?.colour }}
+        >
           <h2>Analysis</h2>
         </div>
         <div className="font-semibold text-lg px-4 space-y-4">

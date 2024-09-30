@@ -1,7 +1,8 @@
-import { Entry } from "@prisma/client";
+import { Analysis, Entry } from "@prisma/client";
 
 type EntryCardProps = {
   entry: Entry;
+  analysis: Analysis;
 };
 
 export default function EntryCard({ entry }: EntryCardProps) {
