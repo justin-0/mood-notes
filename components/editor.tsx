@@ -22,7 +22,7 @@ export default function Editor({ data }: EditorProps) {
     data: content,
     onSave: async (value) => {
       setIsLoading(true);
-      const updated = await updateEntry(data.id, value);
+      await updateEntry(data.id, value);
       setIsLoading(false);
       router.refresh();
     },
