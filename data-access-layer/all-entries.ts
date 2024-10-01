@@ -11,6 +11,7 @@ export default async function getEntries() {
       orderBy: {
         createdAt: "desc",
       },
+      // Returns all entries with analysis - joins table
       include: {
         analysis: true,
       },

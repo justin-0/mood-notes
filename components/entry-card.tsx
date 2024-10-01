@@ -7,7 +7,6 @@ type EntryCardProps = {
 
 export default function EntryCard({ entry, analysis }: EntryCardProps) {
   const created = new Date(entry.createdAt).toDateString();
-  // console.log(analysis);
 
   return (
     <div className=" border border-black/5 shadow-sm rounded-xl p-3">

@@ -3,6 +3,8 @@ import { OpenAI } from "@langchain/openai";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
+import { Entry } from "@prisma/client";
+import { Document } from "langchain/document";
 
 // Output for AI reply
 const parser = StructuredOutputParser.fromZodSchema(
@@ -43,4 +45,19 @@ export const analyse = async (prompt: string) => {
     format_instructions: parser.getFormatInstructions(),
   });
   return response;
+};
+
+// Vector DB to be used to save in memory
+export const questionAnswer = (question: string, entries: Entry[]) => {
+  // Convert every entry into a langchain document
+  const docs = entries.map((entry) => {
+    return new Document({
+      // Documents page content will the content from our entry
+      pageContent: entry.content,
+      // Metadata to help with querying docs
+      metadata: { id: entry.id, created: entry.createdAt },
+    });
+  });
+
+  const model = new OpenAI({ temperature: 0 });
 };
