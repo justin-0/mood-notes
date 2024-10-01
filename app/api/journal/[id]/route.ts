@@ -5,9 +5,9 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { entryID: string } }
+  { params }: { params: { id: string } }
 ) {
-  const id = params.entryID;
+  const id = params.id;
   const { content }: { content: string } = await req.json();
   const user = await getCurrentUser();
   if (!user) {
