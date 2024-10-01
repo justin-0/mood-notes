@@ -5,6 +5,9 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { Entry } from "@prisma/client";
 import { Document } from "langchain/document";
+import { loadQARefineChain } from "langchain/chains";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
 // Output for AI reply
 const parser = StructuredOutputParser.fromZodSchema(
@@ -48,7 +51,7 @@ export const analyse = async (prompt: string) => {
 };
 
 // Vector DB to be used to save in memory
-export const questionAnswer = (question: string, entries: Entry[]) => {
+export const questionAnswer = async (question: string, entries: Entry[]) => {
   // Convert every entry into a langchain document
   const docs = entries.map((entry) => {
     return new Document({
@@ -58,6 +61,21 @@ export const questionAnswer = (question: string, entries: Entry[]) => {
       metadata: { id: entry.id, created: entry.createdAt },
     });
   });
-
+  // Create model
   const model = new OpenAI({ temperature: 0 });
+  // Create our QA chain with langchain - iterates over docs and updates answer with each iteration
+  const chain = loadQARefineChain(model);
+  // How we want to create our embeddings, make api call to Open AI - returns vectors
+  const embeddings = new OpenAIEmbeddings();
+  // Create vector store - references docs and embeddings
+  const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+  // Similarity search to return docs that are related to the context of the question
+  const relevantDocs = store.similaritySearch(question);
+  // Result
+  const res = await chain.invoke({
+    input_documents: relevantDocs,
+    question,
+  });
+  // Returns the chain values from QA chain model
+  return res;
 };
