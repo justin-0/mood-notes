@@ -31,3 +31,16 @@ export const updateEntry = async (id: string, content: string) => {
   const data: { data: Entry } = await res.json();
   return data.data;
 };
+
+export const newQuestion = async (question: string) => {
+  const res = await fetch(
+    new Request(url("/api/question"), {
+      method: "POST",
+      body: JSON.stringify({ question }),
+    })
+  );
+
+  if (!res.ok) {
+    throw new Error("Question not submitted");
+  }
+};

@@ -1,12 +1,11 @@
 import { z } from "zod";
-import { OpenAI } from "@langchain/openai";
+import { OpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { Entry } from "@prisma/client";
 import { Document } from "langchain/document";
 import { loadQARefineChain } from "langchain/chains";
-import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
 // Output for AI reply
@@ -50,32 +49,50 @@ export const analyse = async (prompt: string) => {
   return response;
 };
 
-// Vector DB to be used to save in memory
 export const questionAnswer = async (question: string, entries: Entry[]) => {
-  // Convert every entry into a langchain document
-  const docs = entries.map((entry) => {
-    return new Document({
-      // Documents page content will the content from our entry
-      pageContent: entry.content,
-      // Metadata to help with querying docs
-      metadata: { id: entry.id, created: entry.createdAt },
+  try {
+    console.log("ENTRY AI FILES", entries);
+
+    // Convert entries to Documents
+    const docs = entries.map((entry) => {
+      console.log("DOCS MAP ARRAY", entry);
+      return new Document({
+        pageContent: entry.content,
+        metadata: { id: entry.id, created: entry.createdAt },
+      });
     });
-  });
-  // Create model
-  const model = new OpenAI({ temperature: 0 });
-  // Create our QA chain with langchain - iterates over docs and updates answer with each iteration
-  const chain = loadQARefineChain(model);
-  // How we want to create our embeddings, make api call to Open AI - returns vectors
-  const embeddings = new OpenAIEmbeddings();
-  // Create vector store - references docs and embeddings
-  const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
-  // Similarity search to return docs that are related to the context of the question
-  const relevantDocs = store.similaritySearch(question);
-  // Result
-  const res = await chain.invoke({
-    input_documents: relevantDocs,
-    question,
-  });
-  // Returns the chain values from QA chain model
-  return res;
+    console.log("DOCS", docs);
+    const model = new OpenAI({ temperature: 0 });
+    const chain = loadQARefineChain(model);
+    const embeddings = new OpenAIEmbeddings();
+    // Create vector store
+    console.log("Creating vector store...");
+    const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+    console.log("STORE created successfully");
+
+    // Perform similarity search
+    console.log("Performing similarity search...");
+    const relevantDocs = await store.similaritySearch(question);
+    console.log("RELEVANT DOCS", relevantDocs);
+
+    if (relevantDocs.length === 0) {
+      console.warn("No relevant documents found for the question.");
+      return {
+        text: "I couldn't find any relevant information to answer your question.",
+      };
+    }
+
+    // Invoke the chain
+    console.log("Invoking chain...");
+    const res = await chain.invoke({
+      input_documents: relevantDocs,
+      question,
+    });
+    console.log("RESPONSE", res);
+
+    return res;
+  } catch (error) {
+    console.error("Error in questionAnswer function:", error);
+    throw error;
+  }
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import { newQuestion } from "@/lib/api";
 import React from "react";
 
 export default function Question() {
@@ -7,8 +8,9 @@ export default function Question() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    await newQuestion(value);
   };
   return (
     <div>
