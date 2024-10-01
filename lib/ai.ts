@@ -51,29 +51,24 @@ export const analyse = async (prompt: string) => {
 
 export const questionAnswer = async (question: string, entries: Entry[]) => {
   try {
-    console.log("ENTRY AI FILES", entries);
-
     // Convert entries to Documents
     const docs = entries.map((entry) => {
-      console.log("DOCS MAP ARRAY", entry);
       return new Document({
         pageContent: entry.content,
         metadata: { id: entry.id, created: entry.createdAt },
       });
     });
-    console.log("DOCS", docs);
+
     const model = new OpenAI({ temperature: 0 });
     const chain = loadQARefineChain(model);
     const embeddings = new OpenAIEmbeddings();
     // Create vector store
-    console.log("Creating vector store...");
+
     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
-    console.log("STORE created successfully");
 
     // Perform similarity search
-    console.log("Performing similarity search...");
+
     const relevantDocs = await store.similaritySearch(question);
-    console.log("RELEVANT DOCS", relevantDocs);
 
     if (relevantDocs.length === 0) {
       console.warn("No relevant documents found for the question.");
@@ -83,14 +78,13 @@ export const questionAnswer = async (question: string, entries: Entry[]) => {
     }
 
     // Invoke the chain
-    console.log("Invoking chain...");
     const res = await chain.invoke({
       input_documents: relevantDocs,
       question,
     });
     console.log("RESPONSE", res);
 
-    return res;
+    return res.output_text;
   } catch (error) {
     console.error("Error in questionAnswer function:", error);
     throw error;

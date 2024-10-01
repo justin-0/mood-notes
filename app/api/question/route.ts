@@ -11,6 +11,6 @@ export async function POST(req: Request) {
   const entries = await getEntries();
   if (!entries) return new NextResponse("No entries", { status: 404 });
   const answer = await questionAnswer(question, entries);
-  console.log("API ROUTE POST ANSWER", answer, "ANSWER IN API ROUTE");
+
   return NextResponse.json({ data: answer });
 }

@@ -1,5 +1,4 @@
 import { Entry } from "@prisma/client";
-import { analyse } from "./ai";
 
 // Created so wherever it is hosted the url will always be correct
 const url = (path: string) => window.location.origin + path;
@@ -32,7 +31,7 @@ export const updateEntry = async (id: string, content: string) => {
   return data.data;
 };
 
-export const newQuestion = async (question: string) => {
+export const askQuestion = async (question: string) => {
   const res = await fetch(
     new Request(url("/api/question"), {
       method: "POST",
@@ -43,4 +42,7 @@ export const newQuestion = async (question: string) => {
   if (!res.ok) {
     throw new Error("Question not submitted");
   }
+  const data: { data: string } = await res.json();
+  console.log("ASK QUESTION DATA", data);
+  return data.data;
 };
